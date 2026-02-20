@@ -29,8 +29,8 @@
                             <outputDirectory>src/main/java</outputDirectory>
                             <lexDefinitions>
                                 <lexDefinition>src/main/jflex</lexDefinition>
-                                <lexDefinition>src/main/lex/preprocessor.jflex</lexDefinition>
-                                <lexDefinition>/pub/postprocessor.jflex</lexDefinition>
+<!--                                <lexDefinition>src/main/lex/preprocessor.jflex</lexDefinition>-->
+<!--                                <lexDefinition>/pub/postprocessor.jflex</lexDefinition>-->
                             </lexDefinitions>
                         </configuration>
                     </execution>

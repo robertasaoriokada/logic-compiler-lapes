@@ -9,5 +9,11 @@ public enum Token {
     OR,
     EXCOR,
     COND,
-    BICOND
+    BICOND;
+
+    Token() {
+    }
+
 }
+
+

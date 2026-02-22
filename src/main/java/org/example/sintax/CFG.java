@@ -2,7 +2,6 @@ package org.example.sintax;
 
 import org.example.enums.Token;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -21,10 +20,12 @@ public class CFG {
     }
 
     Symbol expr = new Symbol("expr", false);
-    Symbol term = new Symbol("term", false);
-    Symbol factor = new Symbol("factor", false);
-    Symbol product = new Symbol("product", false);
-    Symbol alpha = new Symbol("alpha", false);
+    Symbol biImplyExpr = new Symbol("biImplyExpr", false);
+    Symbol implyExpr = new Symbol("implyExpr", false);
+    Symbol xorExpr = new Symbol("xorExpr", false);
+    Symbol orExpr = new Symbol("orExpr", false);
+    Symbol andExpr = new Symbol("andExpr", false);
+    Symbol notExpr = new Symbol("notExpr", false);
     Symbol finale = new Symbol("finale", false);
 
     Symbol id = new Symbol(Token.ID.name(), true);
@@ -39,29 +40,32 @@ public class CFG {
     Symbol excOr = new Symbol(Token.EXCOR.name(), true);
 
     // Regras (cada alternativa é um ProductionRule separado):
+    ProductionRule r = new ProductionRule(expr, Arrays.asList(biImplyExpr));
 
-    // expr (↔) — associatividade à esquerda
-    ProductionRule r1a = new ProductionRule(expr, Arrays.asList(term));
-    ProductionRule r1b = new ProductionRule(expr, Arrays.asList(expr, biCond, term));
+    // expr (↔) — associatividade à direita - tanto faz a ordem pois o valor lógico será o mesmo
+    ProductionRule r1a = new ProductionRule(biImplyExpr, Arrays.asList(implyExpr));
+    ProductionRule r1b = new ProductionRule(biImplyExpr, Arrays.asList(implyExpr, biCond, biImplyExpr));
 
     // term (→) — associatividade à direita
-    ProductionRule r2a = new ProductionRule(term, Arrays.asList(factor));
-    ProductionRule r2b = new ProductionRule(term, Arrays.asList(factor, cond, term));
+    ProductionRule r2a = new ProductionRule(implyExpr, Arrays.asList(xorExpr));
+    ProductionRule r2b = new ProductionRule(implyExpr, Arrays.asList(xorExpr, cond, implyExpr));
 
     // factor (⊕) — associatividade à esquerda
-    ProductionRule r3a = new ProductionRule(factor, Arrays.asList(product));
-    ProductionRule r3b = new ProductionRule(factor, Arrays.asList(factor, excOr, product));
+    ProductionRule r3a = new ProductionRule(xorExpr, Arrays.asList(orExpr));
+    ProductionRule r3b = new ProductionRule(xorExpr, Arrays.asList(xorExpr, excOr, orExpr));
 
     // product (∨) — associatividade à esquerda
-    ProductionRule r4a = new ProductionRule(product, Arrays.asList(alpha));
-    ProductionRule r4b = new ProductionRule(product, Arrays.asList(product, or, alpha));
+    ProductionRule r4a = new ProductionRule(orExpr, Arrays.asList(andExpr));
+    ProductionRule r4b = new ProductionRule(orExpr, Arrays.asList(orExpr, or, andExpr));
 
     // alpha (∧) — associatividade à esquerda
-    ProductionRule r5a = new ProductionRule(alpha, Arrays.asList(finale));
-    ProductionRule r5b = new ProductionRule(alpha, Arrays.asList(alpha, and, finale));
+    ProductionRule r5a = new ProductionRule(andExpr, Arrays.asList(notExpr));
+    ProductionRule r5b = new ProductionRule(andExpr, Arrays.asList(andExpr, and, notExpr));
 
     // finale — negação e primários
-    ProductionRule r6  = new ProductionRule(finale, Arrays.asList(negative, finale)); // ¬F
+    ProductionRule r6a  = new ProductionRule(notExpr, Arrays.asList(negative, notExpr)); // ¬F
+    ProductionRule r6b  = new ProductionRule(notExpr, Arrays.asList(finale)); // ¬F
+
     ProductionRule r7  = new ProductionRule(finale, Arrays.asList(lParen, expr, rParen)); // (E)
     ProductionRule r8  = new ProductionRule(finale, Arrays.asList(id)); // p, q, r...
 

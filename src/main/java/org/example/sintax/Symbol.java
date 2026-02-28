@@ -1,5 +1,7 @@
 package org.example.sintax;
 
+import java.util.Objects;
+
 public class Symbol {
     private String name;
     private boolean isTerminal;

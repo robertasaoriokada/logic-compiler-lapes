@@ -2,7 +2,9 @@ package org.example.sintax;
 
 import org.example.enums.Token;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,11 +14,20 @@ public class CFG {
     public List<ProductionRule> rules;
     public Symbol startSymbol;
 
-    public CFG(Set<Symbol> nonTerminals, Set<Symbol> terminals, List<ProductionRule> rules, Symbol startSymbol) {
-        this.nonTerminalSymbols = nonTerminals;
-        this.terminalSymbols = terminals;
-        this.rules = rules;
-        this.startSymbol = startSymbol;
+    public CFG() {
+        nonTerminalSymbols = new HashSet<>();
+        terminalSymbols = new HashSet<>();
+        rules = new ArrayList<>();
+    }
+
+    public List<ProductionRule> getRulesForNonTerminal(Symbol nonTerminal) {
+        List<ProductionRule> rulesForSymbol = new ArrayList<>();
+        for (ProductionRule r : rules) {
+            if (r.getLeftHandSide().equals(nonTerminal)) {
+                rulesForSymbol.add(r);
+            }
+        }
+        return rulesForSymbol;
     }
 
     Symbol expr = new Symbol("expr", false);
@@ -51,16 +62,16 @@ public class CFG {
     ProductionRule r2b = new ProductionRule(implyExpr, Arrays.asList(xorExpr, cond, implyExpr));
 
     // factor (⊕) — associatividade à esquerda
-    ProductionRule r3a = new ProductionRule(xorExpr, Arrays.asList(orExpr));
-    ProductionRule r3b = new ProductionRule(xorExpr, Arrays.asList(xorExpr, excOr, orExpr));
+    ProductionRule r3a = new ProductionRule(xorExpr, Arrays.asList(orExpr));    
+    ProductionRule r3b = new ProductionRule(xorExpr, Arrays.asList(orExpr, excOr, xorExpr));
 
     // product (∨) — associatividade à esquerda
     ProductionRule r4a = new ProductionRule(orExpr, Arrays.asList(andExpr));
-    ProductionRule r4b = new ProductionRule(orExpr, Arrays.asList(orExpr, or, andExpr));
+    ProductionRule r4b = new ProductionRule(orExpr, Arrays.asList(andExpr, or, orExpr));
 
     // alpha (∧) — associatividade à esquerda
     ProductionRule r5a = new ProductionRule(andExpr, Arrays.asList(notExpr));
-    ProductionRule r5b = new ProductionRule(andExpr, Arrays.asList(andExpr, and, notExpr));
+    ProductionRule r5b = new ProductionRule(andExpr, Arrays.asList(notExpr, and, andExpr));
 
     // finale — negação e primários
     ProductionRule r6a  = new ProductionRule(notExpr, Arrays.asList(negative, notExpr)); // ¬F
